@@ -15,57 +15,65 @@ class Scroll {
     private HintType hintType = null; // 힌트 타입을 저장
     private Object hintValue = null; // 힌트 내용을 저장
 
-    private ImageIcon scrollIcon = null;
-    private Image scrollImage = null;
+    // 스크롤 이미지 받아오기
+    private static ImageIcon damageScrollIcon = new ImageIcon("images/defaultScroll.png");
+    private static Image damageScrollImage = damageScrollIcon.getImage();
+    private static ImageIcon healScrollIcon = new ImageIcon("images/greenScroll.png");
+    private static Image healScrollImage = healScrollIcon.getImage();
+    private static ImageIcon truthScrollIcon = new ImageIcon("images/purpleScroll.png");
+    private static Image truthScrollImage = truthScrollIcon.getImage();
+
     private JPanel scrollPanel = null;
 
     public Scroll(JPanel groundPanel) {
         this.groundPanel = groundPanel;
 
-        scrollIcon = new ImageIcon("images/Scroll.png");
-        scrollImage = scrollIcon.getImage();
+        setScroll(); // 스크롤의 내용을 정한다
+
         scrollPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                g.drawImage(scrollImage, 0, 0, getWidth(), getHeight(), this);
+            public void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D)g; // 투명도를 조절하기위해 Graphics2D로 변환
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f)); // 투명도를 0.7로 설정
+                switch (scrollType) { // 스크롤 타입에 따라 다른 이미지로 그린다
+                    case DAMAGE -> g.drawImage(damageScrollImage,0,0,getWidth(),getHeight(),this);
+                    case HEAL -> g.drawImage(healScrollImage,0,0,getWidth(),getHeight(),this);
+                    case TRUTH -> g.drawImage(truthScrollImage,0,0,getWidth(),getHeight(),this);
+                }
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f)); // 투명도를 다시 복구
             }
         };
-        scrollPanel.setOpaque(false);
-        scrollPanel.setLayout(new BorderLayout());
-        setScrollText(); // 스크롤의 내용을 정해서
+        scrollPanel.setOpaque(false); // 배경 투명하게
+        scrollPanel.setLayout(new BorderLayout()); // 보더레이아웃으로 설정
         text.setHorizontalAlignment(SwingConstants.CENTER); // 텍스트 가운데 정렬
-        scrollPanel.add(text, BorderLayout.CENTER);
-        int width = 120;
-        int height = 60;
-        scrollPanel.setSize(width, height);
-        int x = (int) (Math.random() * (groundPanel.getWidth() - 100)) + 50; // 랜덤한 x 생성
+        scrollPanel.add(text, BorderLayout.CENTER); // 텍스트 추가
+        scrollPanel.setSize(120, 60); // 크기 설정
+        int x = (int) (Math.random() * (groundPanel.getWidth() - 120)); // 랜덤한 x 생성
         int y = 50;
-        //text.setLocation(x, y); // 위에서 정한 위치로 보내고
-        //text.setVisible(true); //보이게한다
-        scrollPanel.setLocation(x, y);
+        scrollPanel.setLocation(x, y); // 위치설정
         scrollPanel.setVisible(true);
         groundPanel.add(scrollPanel);
+        groundPanel.setComponentZOrder(scrollPanel, 0); // 스크롤을 화면 맨 앞으로 가져옴
 
     }
 
-    private void setScrollText() { // 스크롤의 내용을 정하는 함수
-        text.setSize(100, 40); //
-        tempWord = textStore.get();
-        tempWord = tempWord.toLowerCase();
-        firstChar = tempWord.charAt(0);
-        String problem = "<html>첫 글자: " + firstChar + "<br>";
 
+    private void setScroll() { // 스크롤의 내용을 정하는 함수
+        text.setSize(100, 40); //
+        tempWord = textStore.get(); // 조건을 정할 임시 단어를 불러온다
+        firstChar = tempWord.charAt(0); // 첫 글자 저장
+        String problem = "<html>첫 글자: " + firstChar + "<br>"; // 문제를 problem에 저장해둔다
+
+        // 랜덤으로 스크롤의 타입을 정한다
         int rand = (int) (Math.random() * 100 + 1);
         if (rand < 85) {
             scrollType = ScrollType.DAMAGE;
-            text.setForeground(Color.red);
         } else if (rand < 95) {
             scrollType = ScrollType.HEAL;
-            text.setForeground(Color.green);
         } else {
             scrollType = ScrollType.TRUTH;
-            text.setForeground(Color.magenta);
         }
+        // 랜덤으로 문제의 내용을 정해 problem에 추가한다
         rand = (int) (Math.random() * 100 + 1);
         if (rand < 50) {
             String wordMean = textStore.getMean(tempWord);
@@ -85,11 +93,9 @@ class Scroll {
         }
         problem += "</html>";
         text.setText(problem);
-        //groundPanel.add(text);
-        scrollPanel.repaint();
     }
 
-    private static int getVowelCount(String word) {
+    private static int getVowelCount(String word) { // 모음 개수를 세는 함수
         int vowelCount = 0;
         for (int i = 0; i < word.length(); i++) {
             if (word.charAt(i) == 'a' ||
@@ -105,22 +111,23 @@ class Scroll {
 
     public void remove() {
         groundPanel.remove(scrollPanel);
-    }
+    } // 패널에서 스크롤을 지우는 함수
 
     public int getY() {
         return scrollPanel.getY();
     }
 
-    public void fall(int n) {
+    public void fall(int n) { // 입력한 값만큼 스크롤을 내려가게 하는 함수
         scrollPanel.setLocation(scrollPanel.getX(), scrollPanel.getY() + n);
     }
 
-    public boolean isCorrect(String answer) {
-        answer = answer.toLowerCase();
-        String answerMean = textStore.getMean(answer);
-        if (answerMean == null || answer.charAt(0) != firstChar) // 사전에 등록되어있지 않거나 첫글자가 다르면
+    public boolean isCorrect(String answer) { // 정답을 확인하는 함수
+        answer = answer.toLowerCase(); // 모두 소문자로 바꾼다
+        String answerMean = textStore.getMean(answer); // 입력한 답의 뜻을 찾는다
+        if (answerMean == null || answer.charAt(0) != firstChar) // 입력한 답의 뜻이 없으면 사전에 등록되어있지 않은 단어. 또는 첫글자가 다르면
             return false; // false 리턴
 
+        // 힌트에 따라 답을 검사하고 맞으면 true를 리턴한다
         switch (hintType) {
             case HintType.MEAN:
                 if (answerMean.equals(hintValue))
@@ -135,14 +142,10 @@ class Scroll {
                     return true;
                 break;
         }
-        return false;
+        return false; // 맞추지 못했으면 false 리턴
     }
 
-    public ScrollType getScrollType() {
-        return scrollType;
-    }
+    public ScrollType getScrollType() { return scrollType; }
 
-    public void revealTruth() {
-        text.setText(tempWord);
-    }
+    public void revealTruth() { text.setText(tempWord); } // 스크롤에 저장되어있는 임시 단어로 내용을 바꾸는 함수
 }

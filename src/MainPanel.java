@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Comparator;
@@ -13,20 +14,22 @@ public class MainPanel extends JPanel {
     String[] levels = {"easy", "normal", "hard"};
     JComboBox selectLevelBox = new JComboBox(levels);
     JTextField inputNameField = new JTextField();
+    ImageIcon mainIcon = new ImageIcon("images/main.png");
+    Image mainImage = mainIcon.getImage();
 
     public MainPanel(GameFrame gameFrame){
         this.gameFrame=gameFrame;
         setLayout(null);
-        selectLevelBox.setLocation(260, 270);
+        selectLevelBox.setLocation(50, 510);
         selectLevelBox.setSize(180,40);
-        inputNameField.setLocation(460,270 );
+        inputNameField.setLocation(250,510 );
         inputNameField.setSize(180, 40);
-        startButton.setLocation(350,350);
+        startButton.setLocation(540,150);
         startButton.setSize(200,60);
-        exitButton.setLocation(350,430);
-        exitButton.setSize(200,60);
-        rankButton.setLocation(350, 510);
+        rankButton.setLocation(540, 240);
         rankButton.setSize(200, 60);
+        exitButton.setLocation(540,330);
+        exitButton.setSize(200,60);
 
         add(inputNameField);
         add(selectLevelBox);
@@ -62,7 +65,10 @@ public class MainPanel extends JPanel {
             }
         });
     }
-
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(mainImage, 0,0, getWidth(), getHeight(), null);
+    }
     class Leaderboard extends JFrame {
         public Leaderboard(){
             super("leaderboard");
