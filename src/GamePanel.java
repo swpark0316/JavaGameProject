@@ -45,6 +45,7 @@ public class GamePanel extends JPanel {
         private ImageIcon lv3Icon = new ImageIcon("images/level3.png");
         private Image level3 =lv3Icon.getImage();
         private Image currentStage;
+        private JLabel criticalLineLabel= new JLabel("크리티컬 라인");
         EntityPanel player = new EntityPanel(true);
         EntityPanel boss = new EntityPanel(false);
 
@@ -54,14 +55,20 @@ public class GamePanel extends JPanel {
             this.setBackground(Color.WHITE);
             this.setLayout(null); //레이아웃 없이 배치
             JLabel scoreLabel = scoreManager.getScoreLabel(); // 점수를 표시할 레이블 받아오기
-            scoreLabel.setBounds(getWidth()-50, 10, 100, 30); //위치, 크기 설정
+            // 위치, 크기 설정
+            scoreLabel.setLocation(GameFrame.frameWidth-50, 10);
+            scoreLabel.setSize(100, 30);
+
+            criticalLineLabel.setLocation(GameFrame.frameWidth - 200,207 );
+            criticalLineLabel.setSize(100,30);
 
             //엔티티 그림들 위치, 크기 설정
-            boss.setBounds(gameFrame.frameWidth/2-75, 50, 150, 150);
-            player.setBounds(gameFrame.frameWidth/2-75, 350, 150, 150);
+            boss.setBounds(GameFrame.frameWidth /2-75, 50, 150, 150);
+            player.setBounds(GameFrame.frameWidth /2-75, 350, 150, 150);
 
             // 패널에 추가
             add(scoreLabel);
+            add(criticalLineLabel);
             add(boss);
             add(player);
 
@@ -79,27 +86,36 @@ public class GamePanel extends JPanel {
                 currentStage = level3;
             }
             g.drawImage(currentStage,0, 0, getWidth(),getHeight(),this);
-            g.drawLine(0,200,this.getWidth(),200);
+            g.setColor(Color.YELLOW);
+            g.fillRect(0,204,this.getWidth(),2);
+            g.setColor(Color.BLACK);
 
 
         }
 
         class EntityPanel extends JPanel{
+            private enum State{IDLE, HIT}
             private boolean isPlayer;
             private int maxHp,hp;
-            private BufferedImage idleIcon;
+            private BufferedImage playerIcon;
+            private BufferedImage bossIcon;
             private BufferedImage[] idleImages;
+            private BufferedImage[] hitImages;
             private int tick=0;
+            private int hitTick=0;
             private AnimationThread animationThread;
             private HealthBar healthBar = new HealthBar();
+            private State state;
 
             public EntityPanel(boolean isPlayer){ // true면 플레이어, false면 보스
                 this.isPlayer=isPlayer;
                 this.maxHp = this.hp = maxHp;
                 setLayout(new BorderLayout());
                 setOpaque(false);
-                if(isPlayer)
+                if(isPlayer) {
+                    state=State.IDLE;
                     loadPlayerImages();
+                }
                 else
                     loadBossImages();
 
@@ -125,49 +141,91 @@ public class GamePanel extends JPanel {
                 }
                 healthBar.repaint();
             }
-            private void loadPlayerImages(){
+            private void loadPlayerImages(){ // 플레이어 이미지를 로드하는 함수
                 try {
-                    idleIcon = ImageIO.read(new File("images/playerIdle.png"));
+                    playerIcon = ImageIO.read(new File("images/playerIdle.png")); // 파일을 연다
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                // 이미지를 잘라서 이미지 배열에 저장한다
                 idleImages = new BufferedImage[22];
-                idleImages[0]=idleIcon.getSubimage(590,0,90,75); //1
-                idleImages[1]=idleIcon.getSubimage(590,78,90,75); //2
-                idleImages[2]=idleIcon.getSubimage(0,108,90,75); //3
-                idleImages[3]=idleIcon.getSubimage(90,108,90,75); //4
-                idleImages[4]=idleIcon.getSubimage(180,108,90,75); //5
-                idleImages[5]=idleIcon.getSubimage(270,108,90,75); //6
-                idleImages[6]=idleIcon.getSubimage(360,108,90,75); //7
-                idleImages[7]=idleIcon.getSubimage(450,108,90,75); //8
-                idleImages[8]=idleIcon.getSubimage(540,156,87,75); //9
-                idleImages[9]=idleIcon.getSubimage(630,156,87,75); //10
-                idleImages[10]=idleIcon.getSubimage(0,186,90,75); //11
-                idleImages[11]=idleIcon.getSubimage(90,186,90,75); //12
+                idleImages[0]=playerIcon.getSubimage(590,0,90,75); //1
+                idleImages[1]=playerIcon.getSubimage(590,78,90,75); //2
+                idleImages[2]=playerIcon.getSubimage(0,108,90,75); //3
+                idleImages[3]=playerIcon.getSubimage(90,108,90,75); //4
+                idleImages[4]=playerIcon.getSubimage(180,108,90,75); //5
+                idleImages[5]=playerIcon.getSubimage(270,108,90,75); //6
+                idleImages[6]=playerIcon.getSubimage(360,108,90,75); //7
+                idleImages[7]=playerIcon.getSubimage(450,108,90,75); //8
+                idleImages[8]=playerIcon.getSubimage(540,156,87,75); //9
+                idleImages[9]=playerIcon.getSubimage(630,156,87,75); //10
+                idleImages[10]=playerIcon.getSubimage(0,186,90,75); //11
+                idleImages[11]=playerIcon.getSubimage(90,186,90,75); //12
 
+                idleImages[12]=playerIcon.getSubimage(0,186,90,75); //11
+                idleImages[13]=playerIcon.getSubimage(630,156,87,75); //10
+                idleImages[14]=playerIcon.getSubimage(540,156,87,75); //9
+                idleImages[15]=playerIcon.getSubimage(450,108,90,75); //8
+                idleImages[16]=playerIcon.getSubimage(360,108,90,75); //7
+                idleImages[17]=playerIcon.getSubimage(270,108,90,75); //6
+                idleImages[18]=playerIcon.getSubimage(180,108,90,75); //5
+                idleImages[19]=playerIcon.getSubimage(90,108,90,75); //4
+                idleImages[20]=playerIcon.getSubimage(0,108,90,75); //3
+                idleImages[21]=playerIcon.getSubimage(590,78,90,75); //2
 
-                idleImages[12]=idleIcon.getSubimage(0,186,90,75); //11
-                idleImages[13]=idleIcon.getSubimage(630,156,87,75); //10
-                idleImages[14]=idleIcon.getSubimage(540,156,87,75); //9
-                idleImages[15]=idleIcon.getSubimage(450,108,90,75); //8
-                idleImages[16]=idleIcon.getSubimage(360,108,90,75); //7
-                idleImages[17]=idleIcon.getSubimage(270,108,90,75); //6
-                idleImages[18]=idleIcon.getSubimage(180,108,90,75); //5
-                idleImages[19]=idleIcon.getSubimage(90,108,90,75); //4
-                idleImages[20]=idleIcon.getSubimage(0,108,90,75); //3
-                idleImages[21]=idleIcon.getSubimage(590,78,90,75); //2
             }
-            private void loadBossImages(){
+            private void loadBossImages(){ // 보스 이미지를 로드하는 함수
                 try {
-                    idleIcon = ImageIO.read(new File("images/playerIdle.png"));
+                    bossIcon = ImageIO.read(new File("images/boss.png")); // 파일을 연다
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                idleImages = new BufferedImage[1];
-                idleImages[0]=idleIcon.getSubimage(382 ,186 ,79 ,109 );
+                // 이미지를 잘라서 종류별 이미지 배열에 저장한다
+                idleImages = new BufferedImage[14];
+                idleImages[0]=bossIcon.getSubimage(1260,420 ,180 ,140);
+                idleImages[1]=bossIcon.getSubimage(1439,420 ,180 ,140);
+                idleImages[2]=bossIcon.getSubimage(1617,420 ,180 ,140);
+                idleImages[3]=bossIcon.getSubimage(1795,420 ,180 ,140);
+                idleImages[4]=bossIcon.getSubimage(1973,420 ,180 ,140);
+                idleImages[5]=bossIcon.getSubimage(2151,420 ,180 ,140);
+                idleImages[6]=bossIcon.getSubimage(0,560 ,180 ,140);
+                idleImages[7]=bossIcon.getSubimage(179,560 ,180 ,140);
+                idleImages[8]=bossIcon.getSubimage(359,560 ,180 ,140);
+                idleImages[9]=bossIcon.getSubimage(539,560 ,180 ,140);
+                idleImages[10]=bossIcon.getSubimage(719,560 ,180 ,140);
+                idleImages[11]=bossIcon.getSubimage(899,560 ,180 ,140);
+                idleImages[12]=bossIcon.getSubimage(1079,560 ,180 ,140);
+                idleImages[13]=bossIcon.getSubimage(1259,560 ,180 ,140);
+                
+                hitImages = new BufferedImage[6];
+                hitImages[0]=bossIcon.getSubimage(0,420 ,180 ,140);
+                hitImages[1]=bossIcon.getSubimage(179,420 ,180 ,140);
+                hitImages[2]=bossIcon.getSubimage(359,420 ,180 ,140);
+                hitImages[3]=bossIcon.getSubimage(539,420 ,180 ,140);
+                hitImages[4]=bossIcon.getSubimage(719,420 ,180 ,140);
+                hitImages[5]=bossIcon.getSubimage(899,420 ,180 ,140);
             }
-            private void update(){
-                tick=(tick+1)%idleImages.length;
+            public void hit(){
+                state = State.HIT; // 피격 상태로 변경
+                hitTick = 0; // 재생 도중에 다시 함수가 불리면 처음부터 재생하기 위해 틱을 초기화한다
+            }
+            private void update(){ // 틱을 업데이트하는 함수
+                if (isPlayer) { // 플레이어면
+                        tick = (tick + 1) % idleImages.length; // 이미지 수만큼 틱 반복
+                }
+                else { // 보스면
+                    if (state == State.HIT) { // 피격 상태일때
+                        if (hitTick < hitImages.length - 1) { // 애니메이션 장수보다 작으면 틱 증가
+                            hitTick++;
+                        } else { // 끝났으면
+                            state = State.IDLE; // 대기 상태로 전환
+                            hitTick = 0; // 히트 틱 초기화
+                        }
+                    } else {
+                        tick = (tick + 1) % idleImages.length; // 이미지 수만큼 틱 반복
+                    }
+                }
+                repaint();
             }
             class HealthBar extends JPanel{ // 체력바를 그리는 패널
                 @Override
@@ -195,7 +253,20 @@ public class GamePanel extends JPanel {
 
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.drawImage(idleImages[tick], // 현재 틱 이미지를
+                BufferedImage currentImage = null; // 현재 그려야 할 이미지
+
+                if (isPlayer) {
+                        currentImage = idleImages[tick]; // 대기 이미지
+                }
+                else{
+                    if (state == State.HIT) { // 피격 상태면
+                        currentImage = hitImages[hitTick]; //피격 이미지
+                    }
+                    else {// 아니면
+                        currentImage = idleImages[tick]; // 대기 이미지
+                    }
+                }
+                g.drawImage(currentImage, // 현재 이미지를
                         getWidth()/2-idleImages[0].getWidth()/2, // 패널의 중앙
                         getHeight()-idleImages[0].getHeight()-13, // 체력바와 안겹치는 적당한 높이로 그린다
                         this);
@@ -289,7 +360,7 @@ public class GamePanel extends JPanel {
             while (!isGameOver) {
                 scrolls.add(new Scroll(groundPanel, textStore)); // 새 스크롤을 만들어 벡터에 저장한다
                 try {
-                    sleep(2500);
+                    sleep(3200);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -354,7 +425,8 @@ public class GamePanel extends JPanel {
         private void correctAnswer(Scroll scroll) { // 정답인 스크롤을 처리하는 함수
             Scroll.ScrollType scrollType = scroll.getScrollType(); // 타입을 받아와서
             switch (scrollType) { // 타입별로 처리
-                case Scroll.ScrollType.DAMAGE -> { // 데미지 스크롤
+                case Scroll.ScrollType.DAMAGE -> {// 데미지 스크롤
+                    groundPanel.boss.hit();
                     if(scroll.getY() < 200){ // 일정 y좌표 이하에서 맞추면
                         groundPanel.boss.damage(15); // 데미지를 더 많이 준다
                     }
