@@ -15,6 +15,7 @@ public class GamePanel extends JPanel {
     private GeneratorThread generatorThread = null;
     private GroundPanel groundPanel = null;
     private GameFrame gameFrame = null;
+    private TextStore textStore = null;
     private int fallingSpeed;
     private final int maxPlayerHp = 20;
     private int[] maxBossHpList = {100, 150, 200};
@@ -24,9 +25,10 @@ public class GamePanel extends JPanel {
     private boolean isWin;
     private boolean isGameOver = false;
 
-    public GamePanel(ScoreManager scoreManager, GameFrame gameFrame) {
+    public GamePanel(GameFrame gameFrame, ScoreManager scoreManager, TextStore textStore) {
         this.gameFrame = gameFrame;
         this.scoreManager = scoreManager;
+        this.textStore = textStore;
         groundPanel = new GroundPanel();
         setLayout(new BorderLayout());
         add(new InputPanel(), BorderLayout.SOUTH);
@@ -127,7 +129,7 @@ public class GamePanel extends JPanel {
                 try {
                     idleIcon = ImageIO.read(new File("images/playerIdle.png"));
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
                 idleImages = new BufferedImage[22];
                 idleImages[0]=idleIcon.getSubimage(590,0,90,75); //1
@@ -285,9 +287,9 @@ public class GamePanel extends JPanel {
         @Override
         public void run() {
             while (!isGameOver) {
-                scrolls.add(new Scroll(groundPanel)); // 새 스크롤을 만들어 벡터에 저장한다
+                scrolls.add(new Scroll(groundPanel, textStore)); // 새 스크롤을 만들어 벡터에 저장한다
                 try {
-                    sleep(1500);
+                    sleep(2500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

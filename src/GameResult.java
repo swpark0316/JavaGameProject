@@ -13,6 +13,7 @@ public class GameResult {
         this.level = level;
     }
 
+    // 게터들
     public String getName() {
         return name;
     }
@@ -28,7 +29,12 @@ public class GameResult {
     public String getLevel() {
         return level;
     }
-    public int getLevelIndex(){
+
+    public String getElementsString(){ // 요소들을 ,로 구분한 문자열을 리턴하는 함수
+        return name+","+score+","+isWin+","+level;
+    }
+
+    public int getLevelIndex(){ // 정렬을 위해 레벨에따라 숫자를 리턴하는 함수
         if(level.equals("easy")) return 0;
         else if(level.equals("normal")) return 1;
         else return 2;

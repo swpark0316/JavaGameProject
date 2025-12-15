@@ -7,8 +7,9 @@ import java.util.Vector;
 
 public class GameFrame extends JFrame {
     private ScoreManager scoreManager = new ScoreManager(); // 점수를 관리하는 객체
-    private MainPanel mainPanel = new MainPanel(this, scoreManager); // 메인화면 패널
-    private GamePanel gamePanel = new GamePanel(scoreManager, this); // 본 게임이 진행되는 패널
+    private TextStore textStore = new TextStore();
+    private MainPanel mainPanel = new MainPanel(this, scoreManager , textStore); // 메인화면 패널
+    private GamePanel gamePanel = new GamePanel(this, scoreManager, textStore); // 본 게임이 진행되는 패널
     public final int frameWidth = 900; // 게임프레임 너비
     public final int frameHeight = 650; // 게임프레임 높이
 

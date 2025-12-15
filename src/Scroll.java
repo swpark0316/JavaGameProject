@@ -8,7 +8,7 @@ class Scroll {
 
     private ScrollType scrollType = null; // 스크롤의 타입을 저장
     private JLabel text = new JLabel(); // 스크롤의 내용을 보여줄 레이블
-    private TextStore textStore = new TextStore(); // 단어를 받아오기 위한 객체
+    private TextStore textStore = null; // 단어를 받아오기 위한 객체
     private JPanel groundPanel = null; // 스크롤을 표시할 패널
     private String tempWord = null; // 받아온 단어를 저장
     private char firstChar = 0; // 단어의 첫 글자를 저장
@@ -25,20 +25,21 @@ class Scroll {
 
     private JPanel scrollPanel = null;
 
-    public Scroll(JPanel groundPanel) {
+    public Scroll(JPanel groundPanel, TextStore textStore) {
         this.groundPanel = groundPanel;
+        this.textStore = textStore;
 
         setScroll(); // 스크롤의 내용을 정한다
 
         scrollPanel = new JPanel() {
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D)g; // 투명도를 조절하기위해 Graphics2D로 변환
+                Graphics2D g2 = (Graphics2D) g; // 투명도를 조절하기위해 Graphics2D로 변환
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f)); // 투명도를 0.7로 설정
                 switch (scrollType) { // 스크롤 타입에 따라 다른 이미지로 그린다
-                    case DAMAGE -> g.drawImage(damageScrollImage,0,0,getWidth(),getHeight(),this);
-                    case HEAL -> g.drawImage(healScrollImage,0,0,getWidth(),getHeight(),this);
-                    case TRUTH -> g.drawImage(truthScrollImage,0,0,getWidth(),getHeight(),this);
+                    case DAMAGE -> g.drawImage(damageScrollImage, 0, 0, getWidth(), getHeight(), this);
+                    case HEAL -> g.drawImage(healScrollImage, 0, 0, getWidth(), getHeight(), this);
+                    case TRUTH -> g.drawImage(truthScrollImage, 0, 0, getWidth(), getHeight(), this);
                 }
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f)); // 투명도를 다시 복구
             }
