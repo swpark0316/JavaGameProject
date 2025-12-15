@@ -167,48 +167,48 @@ public class GamePanel extends JPanel {
             private void update(){
                 tick=(tick+1)%idleImages.length;
             }
-            class HealthBar extends JPanel{
+            class HealthBar extends JPanel{ // 체력바를 그리는 패널
                 @Override
                 public void paintComponent(Graphics g) {
                     super.paintComponent(g);
 
-                    // 패널의 전체 크기 가져오기
-                    int width = getWidth();
-                    int height = getHeight();
 
-                    // 체력 비율 계산 (0.0 ~ 1.0)
-                    double ratio = (double) hp / maxHp;
-                    int barWidth = (int) (width * ratio);
+                    // 빈 체력 그리기
+                    g.setColor(Color.GRAY); // 회색으로
+                    g.fillRect(0, 0, getWidth(), getHeight()); // 패널 크기만큼 그린다
 
-                    // 배경(빈 체력) 그리기 - 회색
-                    g.setColor(Color.GRAY);
-                    g.fillRect(0, 0, width, height);
+                    // 현재 체력 바 그리기
+                    if(isPlayer)  // 플레이어면
+                        g.setColor(Color.GREEN); // 초록색으로 그리기
+                    else  // 보스면
+                        g.setColor(Color.RED); // 빨간색으로 그리기
+                    int barWidth = getWidth() * hp / maxHp; //체력바의 길이 계산
+                    g.fillRect(0, 0, barWidth, getHeight()); // 길이만큼 그린다
 
-                    // 현재 체력 그리기 - 빨간색 (플레이어면 초록색 등 변경 가능)
-                    if(isPlayer) g.setColor(Color.GREEN);
-                    else g.setColor(Color.RED);
-
-                    g.fillRect(0, 0, barWidth, height);
-
-                    // 테두리 그리기 (선택)
+                    // 테두리 그리기
                     g.setColor(Color.BLACK);
-                    g.drawRect(0, 0, width - 1, height - 1);
+                    g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
                 }
             }
+
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.drawImage(idleImages[tick], getWidth()/2-idleImages[0].getWidth()/2,getHeight()-idleImages[0].getHeight()-13, this);
+                g.drawImage(idleImages[tick], // 현재 틱 이미지를
+                        getWidth()/2-idleImages[0].getWidth()/2, // 패널의 중앙
+                        getHeight()-idleImages[0].getHeight()-13, // 체력바와 안겹치는 적당한 높이로 그린다
+                        this);
             }
+
             public void startThread(){
                 animationThread.start();
-            }
-            class AnimationThread extends Thread{
+            } // 애니매이션 스레드 실행 함수
+            class AnimationThread extends Thread{ // 애니메이션을 그리는 스레드
                 @Override
                 public void run() {
-                    while(!isGameOver){
-                        update();
+                    while(!isGameOver){ // 게임이 끝나지 않았으면
                         try {
-                            sleep(200);
+                            sleep(200); // 200ms 마다
+                            update(); // 업데이트를 호출한다
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -231,7 +231,7 @@ public class GamePanel extends JPanel {
             message = "패배.. ";
         }
         message += "최종 점수는 " + scoreManager.getScore() + "\n 다시 하시겠습니까?";
-        gameFrame.addScore(playerName, scoreManager.getScore(), isWin, level); // 스코어 저장
+        scoreManager.addScore(playerName, scoreManager.getScore(), isWin, level); // 스코어 저장
         int result = JOptionPane.showConfirmDialog(this, message, "Game over", JOptionPane.YES_NO_OPTION); // 재시작 여부 메시지를 띄우고
         if (result == JOptionPane.YES_OPTION) {
             resetAndStart(); // yes면 다시시작

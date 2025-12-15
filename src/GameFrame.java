@@ -6,9 +6,8 @@ import java.util.Comparator;
 import java.util.Vector;
 
 public class GameFrame extends JFrame {
-    private Vector<GameResult> leaderboard = new Vector<>(); // 게임 결과들을 저장할 벡터
     private ScoreManager scoreManager = new ScoreManager(); // 점수를 관리하는 객체
-    private MainPanel mainPanel = new MainPanel(this); // 메인화면 패널
+    private MainPanel mainPanel = new MainPanel(this, scoreManager); // 메인화면 패널
     private GamePanel gamePanel = new GamePanel(scoreManager, this); // 본 게임이 진행되는 패널
     public final int frameWidth = 900; // 게임프레임 너비
     public final int frameHeight = 650; // 게임프레임 높이
@@ -36,10 +35,5 @@ public class GameFrame extends JFrame {
         revalidate();
         repaint();
     }
-    public void addScore(String name, int score, boolean isWin, String level){ // 리더보드에 결과를 저장하는 함수
-        leaderboard.add(new GameResult(name, score, isWin, level));
-    }
-    public Vector<GameResult> getLeaderboard(){
-        return leaderboard;
-    } // 리더보드 게터
+
 }
