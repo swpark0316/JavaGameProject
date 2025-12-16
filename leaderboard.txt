@@ -1,5 +1,8 @@
+홍동균,170,true,normal
 ads,140,true,easy
-adsds,0,false,normal
-adsds,0,false,normal
-adsds,0,false,normal
-ads,0,false,easy
+심재현,130,true,easy
+박선우,100,true,easy
+박선우,90,true,easy
+박선우,215,false,hard
+윤성현,70,false,hard
+방요셉,90,false,normal

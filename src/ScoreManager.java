@@ -1,13 +1,10 @@
-import javax.swing.*;
 import java.io.*;
-import java.util.Comparator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
 public class ScoreManager {
     private static Vector<GameResult> leaderboard = new Vector<>(); // 게임 결과들을 저장할 벡터
     private int score = 0;
-    private JLabel scoreLabel = new JLabel("점수: " + Integer.toString(score));
 
     public ScoreManager(){
         try{
@@ -31,20 +28,16 @@ public class ScoreManager {
     }
     public void increase(int amount){ // 어마운트만큼 스코어 증가
         score += amount;
-        scoreLabel.setText("점수: " + Integer.toString(score));
     }
 
     public void increase(){ increase(10); } // 매개변수 없이 호출했을 때
-    public JLabel getScoreLabel(){
-        return scoreLabel;
-    }
+
     public int getScore(){
         return score;
     }
 
     public void resetScore(){
         score = 0;
-        scoreLabel.setText("점수: " + Integer.toString(score));
     }
     public void addScore(String name, int score, boolean isWin, String level){ // 리더보드에 결과를 추가하는 함수
         leaderboard.add(new GameResult(name, score, isWin, level));

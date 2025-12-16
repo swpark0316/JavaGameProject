@@ -140,6 +140,7 @@ public class MainPanel extends JPanel {
     class Leaderboard extends JFrame {
         public Leaderboard(){
             super("leaderboard");
+            setLocation(gameFrame.getLocation());
             setSize(600, 400);
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // 이 창만 닫히게 한다
             String[] columnNames = {"순위", "클리어", "이름", "점수", "난이도"}; // 열 이름
@@ -174,6 +175,7 @@ public class MainPanel extends JPanel {
 
         public manageWord(){
             super("단어 관리");
+            setLocation(gameFrame.getLocation());
             setSize(600, 400);
             setContentPane(new wordPanel());
             setVisible(true);

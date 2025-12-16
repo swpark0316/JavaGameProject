@@ -45,7 +45,6 @@ public class GamePanel extends JPanel {
         private ImageIcon lv3Icon = new ImageIcon("images/level3.png");
         private Image level3 =lv3Icon.getImage();
         private Image currentStage;
-        private JLabel criticalLineLabel= new JLabel("크리티컬 라인");
         EntityPanel player = new EntityPanel(true);
         EntityPanel boss = new EntityPanel(false);
 
@@ -54,21 +53,11 @@ public class GamePanel extends JPanel {
         public GroundPanel() {
             this.setBackground(Color.WHITE);
             this.setLayout(null); //레이아웃 없이 배치
-            JLabel scoreLabel = scoreManager.getScoreLabel(); // 점수를 표시할 레이블 받아오기
-            // 위치, 크기 설정
-            scoreLabel.setLocation(GameFrame.frameWidth-50, 10);
-            scoreLabel.setSize(100, 30);
-
-            criticalLineLabel.setLocation(GameFrame.frameWidth - 200,207 );
-            criticalLineLabel.setSize(100,30);
-
             //엔티티 그림들 위치, 크기 설정
             boss.setBounds(GameFrame.frameWidth /2-75, 50, 150, 150);
             player.setBounds(GameFrame.frameWidth /2-75, 350, 150, 150);
 
             // 패널에 추가
-            add(scoreLabel);
-            add(criticalLineLabel);
             add(boss);
             add(player);
 
@@ -86,8 +75,15 @@ public class GamePanel extends JPanel {
                 currentStage = level3;
             }
             g.drawImage(currentStage,0, 0, getWidth(),getHeight(),this);
+            g.setColor(Color.GREEN);
+            Font defaultF = g.getFont();
+            Font f = new Font("", Font.BOLD, 20);
+            g.setFont(f);
+            g.drawString("점수: " + scoreManager.getScore(), getWidth() - 100, 30);
+            g.setFont(defaultF);
             g.setColor(Color.YELLOW);
-            g.fillRect(0,204,this.getWidth(),2);
+            g.fillRect(0,204,getWidth(),2);
+            g.drawString("크리티컬 라인", getWidth()-80,220);
             g.setColor(Color.BLACK);
 
 
@@ -426,14 +422,14 @@ public class GamePanel extends JPanel {
             Scroll.ScrollType scrollType = scroll.getScrollType(); // 타입을 받아와서
             switch (scrollType) { // 타입별로 처리
                 case Scroll.ScrollType.DAMAGE -> {// 데미지 스크롤
-                    groundPanel.boss.hit();
+                    groundPanel.boss.hit(); // 보스 피격모션 재생
+                    scoreManager.increase(); // 점수 증가
                     if(scroll.getY() < 200){ // 일정 y좌표 이하에서 맞추면
                         groundPanel.boss.damage(15); // 데미지를 더 많이 준다
                     }
                     else{
                         groundPanel.boss.damage(10);
                     }
-                    scoreManager.increase();
                 }
                 case Scroll.ScrollType.HEAL -> { // 힐 스크롤
                     scoreManager.increase(15);

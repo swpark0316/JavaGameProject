@@ -14,7 +14,7 @@ public class GameFrame extends JFrame {
     public static final int frameHeight = 650; // 게임프레임 높이
 
     public GameFrame() {
-        super("게임");
+        super("Magic Typing Academy");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 끄면 종료되게함
         setSize(frameWidth, frameHeight); // 화면 크기 설정
         setContentPane(mainPanel); // 메인화면 불러옴
