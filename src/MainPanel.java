@@ -97,12 +97,13 @@ public class MainPanel extends JPanel {
         });
     }
 
-    private void loadMenuImages(){
+    private void loadMenuImages(){ // 메뉴 버튼들에 이미지를 설정하는 함수
         try {
-            menuIcon = ImageIO.read(new File("images/menuImage.png"));
+            menuIcon = ImageIO.read(new File("images/menuImage.png")); // 스프라이트를 불러오고
         } catch (IOException e) {
             e.printStackTrace();
         }
+        // 버튼에 맞는 이미지를 할당해준다
         setButtonImage(startButton,20, 167, 370, 107, 0);
         setButtonImage(startButton,443, 167, 364, 107, 1);
         setButtonImage(startButton,856, 167, 364, 107, 2);
@@ -137,7 +138,7 @@ public class MainPanel extends JPanel {
         g.drawImage(mainImage, 0,0, getWidth(), getHeight(), null);
     }
 
-    class Leaderboard extends JFrame {
+    class Leaderboard extends JFrame { // 리더보드를 확인할 수 있는 창
         public Leaderboard(){
             super("leaderboard");
             setLocation(gameFrame.getLocation());
@@ -171,7 +172,7 @@ public class MainPanel extends JPanel {
         }
     }
 
-    class manageWord extends JFrame{
+    class manageWord extends JFrame{ // 단어를 추가하거나 삭제할 수 있는 창
 
         public manageWord(){
             super("단어 관리");

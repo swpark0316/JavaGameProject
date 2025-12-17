@@ -66,7 +66,7 @@ public class GamePanel extends JPanel {
 
         public void paintComponent(Graphics g){
             super.paintComponent(g);
-
+            // 난이도별로 배경 설정
             if (level.equals("easy")) {
                 currentStage = level1;
             } else if (level.equals("normal")) {
@@ -74,13 +74,15 @@ public class GamePanel extends JPanel {
             } else {
                 currentStage = level3;
             }
-            g.drawImage(currentStage,0, 0, getWidth(),getHeight(),this);
+            g.drawImage(currentStage,0, 0, getWidth(),getHeight(),this); // 배경을 그린다
             g.setColor(Color.GREEN);
+            // 초록색으로 점수를 표시
             Font defaultF = g.getFont();
             Font f = new Font("", Font.BOLD, 20);
             g.setFont(f);
             g.drawString("점수: " + scoreManager.getScore(), getWidth() - 100, 30);
             g.setFont(defaultF);
+            // 노란색으로 크리티컬 라인을 표시
             g.setColor(Color.YELLOW);
             g.fillRect(0,204,getWidth(),2);
             g.drawString("크리티컬 라인", getWidth()-80,220);
@@ -91,15 +93,17 @@ public class GamePanel extends JPanel {
 
         class EntityPanel extends JPanel{
             private enum State{IDLE, HIT}
-            private boolean isPlayer;
+            private boolean isPlayer; // 플레이어인지
             private int maxHp,hp;
+            // 스프라이트 이미지를 저장할 곳
             private BufferedImage playerIcon;
             private BufferedImage bossIcon;
+            // 자른 이미지들을 저장할 곳
             private BufferedImage[] idleImages;
             private BufferedImage[] hitImages;
-            private int tick=0;
-            private int hitTick=0;
-            private AnimationThread animationThread;
+            private int tick=0; // 애니메이션 틱
+            private int hitTick=0; // 히트 애니메이션 틱
+            private AnimationThread animationThread; // 애니메이션 재생 스레드
             private HealthBar healthBar = new HealthBar();
             private State state;
 
@@ -108,14 +112,14 @@ public class GamePanel extends JPanel {
                 this.maxHp = this.hp = maxHp;
                 setLayout(new BorderLayout());
                 setOpaque(false);
-                if(isPlayer) {
-                    state=State.IDLE;
-                    loadPlayerImages();
+                if(isPlayer) { // 플레이어일 때
+                    loadPlayerImages(); // 플레이어 이미지 로드
                 }
-                else
-                    loadBossImages();
+                else { // 보스일 때
+                    loadBossImages(); // 보스 이미지 로드
+                    state=State.IDLE; // 대기 상태로 설정
+                }
 
-                //수정
                 healthBar.setSize(getWidth(),15); // 체력바 사이즈 조정
                 this.add(healthBar, BorderLayout.SOUTH);
             }
@@ -132,8 +136,8 @@ public class GamePanel extends JPanel {
                 if(hp>=maxHp){ // 힐로쓰는경우 최대체력 넘어가면
                     hp=maxHp; // 최대체력으로 만듦
                 }
-                if(hp<=0){
-                    gameOver(isPlayer);
+                if(hp<=0){ // hp가 0보다 작아지면
+                    gameOver(isPlayer); // 게임오버
                 }
                 healthBar.repaint();
             }
@@ -290,7 +294,7 @@ public class GamePanel extends JPanel {
 
 
 
-    private void gameOver(boolean isPlayer) {
+    private void gameOver(boolean isPlayer) { // 게임이 끝났을 때 처리하는 함수
         isWin= !isPlayer; // 플레이어가 아니면 이기게
         isGameOver = true; // 게임 끝남
         String message; // 게임 종료 메시지

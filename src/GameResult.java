@@ -1,6 +1,6 @@
 import javax.swing.*;
 
-public class GameResult {
+public class GameResult { // 게임 결과를 담는 클래스
     private String name;
     private int score;
     private boolean isWin;

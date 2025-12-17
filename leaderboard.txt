@@ -1,6 +1,7 @@
 홍동균,170,true,normal
 ads,140,true,easy
 심재현,130,true,easy
+dsa,115,true,easy
 박선우,100,true,easy
 박선우,90,true,easy
 박선우,215,false,hard
