@@ -1,9 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Comparator;
-import java.util.Vector;
 
 public class GameFrame extends JFrame {
     private ScoreManager scoreManager = new ScoreManager(); // 점수를 관리하는 객체
@@ -23,7 +19,7 @@ public class GameFrame extends JFrame {
 
 
     public void gameStart(String level, String name){ // 메인화면에서 게임을 시작하는 함수
-        setContentPane(gamePanel); // 패널을 gamePanel로 전환
+        setContentPane(gamePanel); // 패널을 mainPanel로 설정
         // 컨탠트팬을 바꿨으므로 다시 배치하고 그리게 한다
         revalidate();
         repaint();
@@ -32,7 +28,8 @@ public class GameFrame extends JFrame {
     }
 
     public void returnToMain(){ // 메인화면으로 돌아가는 함수
-        setContentPane(mainPanel);
+        setContentPane(mainPanel); // 패널을 mainPanel로 설정
+        // 컨탠트팬을 바꿨으므로 다시 배치하고 그리게 한다
         revalidate();
         repaint();
     }

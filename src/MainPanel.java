@@ -92,7 +92,7 @@ public class MainPanel extends JPanel {
         manageWordButton.addActionListener(new ActionListener() { // 단어 관리 버튼이 눌렸을 때
             @Override
             public void actionPerformed(ActionEvent e) {
-                new manageWord(); // 단어 관리 창을 띄운다
+                new ManageWord(); // 단어 관리 창을 띄운다
             }
         });
     }
@@ -172,16 +172,16 @@ public class MainPanel extends JPanel {
         }
     }
 
-    class manageWord extends JFrame{ // 단어를 추가하거나 삭제할 수 있는 창
+    class ManageWord extends JFrame{ // 단어를 추가하거나 삭제할 수 있는 창
 
-        public manageWord(){
+        public ManageWord(){
             super("단어 관리");
             setLocation(gameFrame.getLocation());
             setSize(600, 400);
-            setContentPane(new wordPanel());
+            setContentPane(new WordPanel());
             setVisible(true);
         }
-        class wordPanel extends JPanel{
+        class WordPanel extends JPanel{
             JLabel infoLabel = new JLabel("<html> <h3> 단어 추가: 영어와 한글을 모두 입력하고 추가 버튼을 누르세요. <br><br>" +
                     "단어 삭제: 삭제할 영어 단어를 입력하고 삭제 버튼을 누르세요.</h3> </html>");
             JLabel engLabel = new JLabel("영어: ");
@@ -191,7 +191,7 @@ public class MainPanel extends JPanel {
             JLabel alertLabel = new JLabel("");
             JButton addButton = new JButton("추가");
             JButton deleteButton = new JButton("삭제");
-            public wordPanel(){
+            public WordPanel(){
                 setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // 이 창만 닫히게 한다
                 setLayout(null);
 

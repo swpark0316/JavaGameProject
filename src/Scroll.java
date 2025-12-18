@@ -15,13 +15,7 @@ class Scroll {
     private HintType hintType = null; // 힌트 타입을 저장
     private Object hintValue = null; // 힌트 내용을 저장
 
-    // 스크롤 이미지 받아오기
-    private static ImageIcon damageScrollIcon = new ImageIcon("images/defaultScroll.png");
-    private static Image damageScrollImage = damageScrollIcon.getImage();
-    private static ImageIcon healScrollIcon = new ImageIcon("images/greenScroll.png");
-    private static Image healScrollImage = healScrollIcon.getImage();
-    private static ImageIcon truthScrollIcon = new ImageIcon("images/purpleScroll.png");
-    private static Image truthScrollImage = truthScrollIcon.getImage();
+
 
     private JPanel scrollPanel = null;
 
@@ -31,19 +25,7 @@ class Scroll {
 
         setScroll(); // 스크롤의 내용을 정한다
 
-        scrollPanel = new JPanel() {
-            public void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D) g; // 투명도를 조절하기위해 Graphics2D로 변환
-                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f)); // 투명도를 0.7로 설정
-                switch (scrollType) { // 스크롤 타입에 따라 다른 이미지로 그린다
-                    case DAMAGE -> g.drawImage(damageScrollImage, 0, 0, getWidth(), getHeight(), this);
-                    case HEAL -> g.drawImage(healScrollImage, 0, 0, getWidth(), getHeight(), this);
-                    case TRUTH -> g.drawImage(truthScrollImage, 0, 0, getWidth(), getHeight(), this);
-                }
-                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f)); // 투명도를 다시 복구
-            }
-        };
+        scrollPanel = new ScrollPanel();
         scrollPanel.setOpaque(false); // 배경 투명하게
         scrollPanel.setLayout(new BorderLayout()); // 보더레이아웃으로 설정
         text.setHorizontalAlignment(SwingConstants.CENTER); // 텍스트 가운데 정렬
@@ -58,6 +40,26 @@ class Scroll {
 
     }
 
+    class ScrollPanel extends JPanel{
+        // 스크롤 이미지 받아오기
+        private static final ImageIcon damageScrollIcon = new ImageIcon("images/defaultScroll.png");
+        private static final Image damageScrollImage = damageScrollIcon.getImage();
+        private static final ImageIcon healScrollIcon = new ImageIcon("images/greenScroll.png");
+        private static final Image healScrollImage = healScrollIcon.getImage();
+        private static final ImageIcon truthScrollIcon = new ImageIcon("images/purpleScroll.png");
+        private static final Image truthScrollImage = truthScrollIcon.getImage();
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g; // 투명도를 조절하기위해 Graphics2D로 변환
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f)); // 투명도를 0.7로 설정
+            switch (scrollType) { // 스크롤 타입에 따라 다른 이미지로 그린다
+                case DAMAGE -> g.drawImage(damageScrollImage, 0, 0, getWidth(), getHeight(), this);
+                case HEAL -> g.drawImage(healScrollImage, 0, 0, getWidth(), getHeight(), this);
+                case TRUTH -> g.drawImage(truthScrollImage, 0, 0, getWidth(), getHeight(), this);
+            }
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f)); // 투명도를 다시 복구
+        }
+    }
 
     private void setScroll() { // 스크롤의 내용을 정하는 함수
         text.setSize(100, 40); //

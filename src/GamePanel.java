@@ -54,13 +54,13 @@ public class GamePanel extends JPanel {
             this.setBackground(Color.WHITE);
             this.setLayout(null); //레이아웃 없이 배치
             //엔티티 그림들 위치, 크기 설정
-            boss.setBounds(GameFrame.frameWidth /2-75, 50, 150, 150);
-            player.setBounds(GameFrame.frameWidth /2-75, 350, 150, 150);
-
+            boss.setLocation(GameFrame.frameWidth /2-75, 50);
+            boss.setSize(150, 150);
+            player.setLocation(GameFrame.frameWidth /2-75, 350);
+            player.setSize(150,150);
             // 패널에 추가
             add(boss);
             add(player);
-
         }
 
 
@@ -124,14 +124,14 @@ public class GamePanel extends JPanel {
                 this.add(healthBar, BorderLayout.SOUTH);
             }
 
-            public void setMaxHp(int maxHp) {
+            public void setMaxHp(int maxHp) { // 최대체력 설정하는 함수
                 this.maxHp = this.hp = maxHp;
             }
 
-            public void createThread(){
+            public void createThread(){ // 개체의 스레드를 만드는 함수
                 animationThread = new AnimationThread();
             }
-            private void damage(int amount){
+            private void damage(int amount){ // 개체에게 amount만큼 데미지를 주는 함수
                 hp-=amount;
                 if(hp>=maxHp){ // 힐로쓰는경우 최대체력 넘어가면
                     hp=maxHp; // 최대체력으로 만듦
@@ -357,7 +357,7 @@ public class GamePanel extends JPanel {
     class GeneratorThread extends Thread { // 스크롤을 생성하는 스레드
         @Override
         public void run() {
-            while (!isGameOver) {
+            while (!isGameOver) { // 게임이 끝나지 않았으면
                 scrolls.add(new Scroll(groundPanel, textStore)); // 새 스크롤을 만들어 벡터에 저장한다
                 try {
                     sleep(3200);
@@ -371,7 +371,7 @@ public class GamePanel extends JPanel {
     class FallingThread extends Thread { // 스크롤들을 화면 아래로 떨어지게 하는 스레드
         @Override
         public void run() {
-            while (!isGameOver) {
+            while (!isGameOver) { // 게임이 끝나지 않았으면
                 for (int i = 0; i < scrolls.size(); i++) { // 스크롤을 순회하며
                     Scroll scroll = scrolls.get(i);
                     scroll.fall(fallingSpeed); // 아래로 내린다
